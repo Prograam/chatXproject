@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <h1>Rohannnnn sahu</h1>
+    <button id="btn">
+        click
+    </button>
+    <div id="from_server"> -->
+    <h1>Chatting ...  inside  <%= groupname     %></h1>
+    <input type="text" name="" id="chat_box">
+    <button id="send">Send</button>
+    <ul id="msg_list">
+      <% for (let i = 0 ; i < previousmsg.length;i++) { %>
+        <li> <%= previousmsg[i].sender %> - <%= previousmsg[i].content %> </li>
+     <% } %>
+    </ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script> 
+
+     var socket = io();
+     
+    let input = document.getElementById("chat_box");
+    let msgList = document.getElementById("msg_list");
+    let Send = document.getElementById("send");
+    // WHENEVER RENDER THE PAGE WE WILL JOIN ROOM
+    socket.emit('join_room',{
+      roomid : '<%= roomid %>'
+    });
+
+    Send.addEventListener("click", () => {
+        let msg = input.value;
+        socket.emit('new_msg', {
+            message: msg,
+            roomid : '<%= roomid %>',
+            sender : '<%= user %> '
+        });
+        input.value = ""; 
+    });
+
+    // Move the socket.on('msg_revd', ...) outside the click event
+    socket.on('msg_revd', (data) => {
+        let msg = document.createElement("li");
+        msg.textContent = data.sender + ' - ' +   data.message;
+        msgList.appendChild(msg);
+    });
+    
+    </script> 
+    <!-- <script>
+      const socket = io();
+    </script> -->
+  </body>
+</html>
